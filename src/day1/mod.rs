@@ -21,18 +21,16 @@ impl Lock {
         Self::default()
     }
 
-    fn left(&mut self, by: u32) {
-        let new_value = self.value as i32 - by as i32;
-
-        if new_value.is_negative() {
-            self.value = 100 - new_value.unsigned_abs();
+    fn left(&mut self) {
+        if self.value == 0 {
+            self.value = 99;
         } else {
-            self.value = new_value as u32;
+            self.value -= 1;
         }
     }
 
-    fn right(&mut self, by: u32) {
-        self.value = (self.value + by) % 100;
+    fn right(&mut self) {
+        self.value = (self.value + 1) % 100;
     }
 }
 
@@ -84,8 +82,8 @@ pub fn run(part2: bool) {
         if part2 {
             for _ in 0..command.value {
                 match command.direction {
-                    Direction::Left => lock.left(1),
-                    Direction::Right => lock.right(1),
+                    Direction::Left => lock.left(),
+                    Direction::Right => lock.right(),
                 }
 
                 if lock.value == 0 {
@@ -95,8 +93,8 @@ pub fn run(part2: bool) {
         } else {
             for _ in 0..command.value {
                 match command.direction {
-                    Direction::Left => lock.left(1),
-                    Direction::Right => lock.right(1),
+                    Direction::Left => lock.left(),
+                    Direction::Right => lock.right(),
                 }
             }
 
