@@ -8,4 +8,5 @@ fn main() {
     day2::run(false);
     day2::run(true);
     day3::run(false);
+    day3::run(true);
 }
