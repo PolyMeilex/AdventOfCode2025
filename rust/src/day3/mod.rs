@@ -21,7 +21,7 @@ fn pass(bank_section: &[u32], num_place: u32) -> Option<(u64, &[u32])> {
     for (id, v) in bank_section
         .iter()
         .enumerate()
-        // Skip the last value/s, because that would prevent us from finding remaining numbers
+        // Reserve sapce at the end for the remaining digits
         .take(bank_section.len() - num_place as usize)
     {
         if *v > first_pass_res.map(|(_, v)| v).unwrap_or(0) {
