@@ -1,6 +1,7 @@
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 
 fn main() {
     day1::run(false);
@@ -9,4 +10,5 @@ fn main() {
     day2::run(true);
     day3::run(false);
     day3::run(true);
+    day4::run(false);
 }
