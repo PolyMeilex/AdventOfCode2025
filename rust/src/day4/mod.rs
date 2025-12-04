@@ -15,6 +15,18 @@ impl Grid {
         self.data.len()
     }
 
+    fn unset(&mut self, x: usize, y: usize) {
+        let Some(row) = self.data.get_mut(y) else {
+            return;
+        };
+
+        let Some(row) = row.get_mut(x) else {
+            return;
+        };
+
+        *row = false;
+    }
+
     fn get(&self, x: usize, y: usize) -> bool {
         let Some(row) = self.data.get(y) else {
             return false;
@@ -79,7 +91,7 @@ impl Grid {
     }
 }
 
-pub fn run(_part2: bool) {
+pub fn run(part2: bool) {
     let src = include_str!("./input2.txt").trim();
 
     let grid: Vec<Vec<bool>> = src
@@ -87,17 +99,35 @@ pub fn run(_part2: bool) {
         .map(|line| line.chars().map(|c| c == '@').collect())
         .collect();
 
-    let grid = Grid::new(grid);
+    let mut grid = Grid::new(grid);
 
     let mut out = 0;
-    for y in 0..grid.height() {
-        for x in 0..grid.width() {
-            if grid.get(x, y) {
-                let count = grid.surrounding_count(x, y);
-                if count < 4 {
-                    out += 1;
+
+    loop {
+        let mut curr_count = 0;
+
+        for y in 0..grid.height() {
+            for x in 0..grid.width() {
+                if grid.get(x, y) {
+                    let count = grid.surrounding_count(x, y);
+                    if count < 4 {
+                        curr_count += 1;
+                        if part2 {
+                            grid.unset(x, y);
+                        }
+                    }
                 }
             }
+        }
+
+        out += curr_count;
+
+        if !part2 {
+            break;
+        }
+
+        if curr_count == 0 {
+            break;
         }
     }
 

@@ -11,4 +11,5 @@ fn main() {
     day3::run(false);
     day3::run(true);
     day4::run(false);
+    day4::run(true);
 }
