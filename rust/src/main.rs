@@ -26,5 +26,5 @@ fn main() {
     day6::run(true);
 
     day7::run(false);
-    // day7::run(true);
+    day7::run(true);
 }
