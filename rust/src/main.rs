@@ -30,4 +30,5 @@ fn main() {
     day7::run(true);
 
     day8::run(false);
+    day8::run(true);
 }

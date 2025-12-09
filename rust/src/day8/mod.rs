@@ -1,16 +1,10 @@
-use std::{collections::HashMap, fmt};
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy, Eq, Hash, PartialEq)]
 struct Vec3 {
     x: u64,
     y: u64,
     z: u64,
-}
-
-impl fmt::Display for Vec3 {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{},{},{}", self.x, self.y, self.z)
-    }
 }
 
 impl Vec3 {
@@ -26,7 +20,7 @@ fn dist(a: Vec3, b: Vec3) -> f64 {
     (x + y + z).sqrt()
 }
 
-pub fn run(_part2: bool) {
+pub fn run(part2: bool) {
     let src = include_str!("./input2.txt").trim();
 
     let junctions: Vec<_> = src
@@ -69,22 +63,31 @@ pub fn run(_part2: bool) {
     distance_list.dedup_by(|a, b| a.a == b.b && a.b == b.a);
 
     let mut world = World::new();
-    for res in distance_list.iter().take(1000) {
-        world.connect(res.a, res.b);
+
+    if part2 {
+        for res in distance_list.iter() {
+            world.connect(res.a, res.b);
+            if world.junction_to_circuit.len() == junctions.len() {
+                dbg!(res.a.x * res.b.x);
+                break;
+            }
+        }
+    } else {
+        for res in distance_list.iter().take(1000) {
+            world.connect(res.a, res.b);
+        }
+        let mut circuits: Vec<_> = world
+            .circuits
+            .iter()
+            .filter(|c| !c.is_empty())
+            .map(|c| c.len())
+            .collect();
+        circuits.sort();
+
+        let out: usize = circuits.iter().rev().take(3).product();
+
+        dbg!(out);
     }
-
-    let mut circuits: Vec<_> = world
-        .circuits
-        .iter()
-        .filter(|c| !c.is_empty())
-        .map(|c| c.len())
-        .collect();
-    circuits.sort();
-    circuits.reverse();
-
-    let out: usize = circuits.iter().take(3).product();
-
-    dbg!(out);
 }
 
 type CircuitId = usize;
@@ -107,13 +110,21 @@ impl World {
         self.junction_to_circuit.get(a).copied()
     }
 
-    fn first_empty_circuit_id(&self) -> CircuitId {
-        self.circuits
+    fn first_empty_circuit_id(&mut self) -> CircuitId {
+        let idx = self
+            .circuits
             .iter()
             .enumerate()
             .find(|(_, c)| c.is_empty())
-            .map(|(id, _)| id)
-            .unwrap()
+            .map(|(id, _)| id);
+
+        if let Some(idx) = idx {
+            idx
+        } else {
+            let idx = self.circuits.len();
+            self.circuits.push(vec![]);
+            idx
+        }
     }
 
     fn connect(&mut self, a: Vec3, b: Vec3) {
@@ -138,7 +149,7 @@ impl World {
             }
             (Some(a_circuit_id), Some(b_circuit_id)) => {
                 if a_circuit_id == b_circuit_id {
-                    //
+                    // "nothing happens!"
                 } else {
                     let [a, b] = self
                         .circuits
