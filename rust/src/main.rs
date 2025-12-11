@@ -8,6 +8,8 @@ mod day7;
 mod day8;
 mod day9;
 
+mod day10;
+
 fn main() {
     day1::run(false);
     day1::run(true);
@@ -34,4 +36,7 @@ fn main() {
     day8::run(true);
 
     day9::run(false);
+    // day9::run(true);
+
+    day10::run(false);
 }
